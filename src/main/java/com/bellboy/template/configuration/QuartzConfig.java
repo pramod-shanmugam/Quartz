@@ -32,10 +32,30 @@ public class QuartzConfig {
         schedulerFactory.setDataSource(dataSource);
         schedulerFactory.setOverwriteExistingJobs(true);
         schedulerFactory.setAutoStartup(true);
+        schedulerFactory.setQuartzProperties(quartzProperties());
+        schedulerFactory.setJobDetails(jobDetail().getObject());
+        schedulerFactory.setTriggers(trigger(jobDetail().getObject()).getObject());
         return schedulerFactory;
     }
 
-
+    private Properties quartzProperties() {
+        Properties properties = new Properties();
+        properties.setProperty("org.quartz.scheduler.instanceName", "MyScheduler");
+        properties.setProperty("org.quartz.scheduler.instanceId", "AUTO");
+        properties.setProperty("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX");
+        properties.setProperty("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.PostgreSQLDelegate");
+        properties.setProperty("org.quartz.jobStore.dataSource", "quartzDataSource");
+        properties.setProperty("org.quartz.jobStore.tablePrefix", "QRTZ_");
+        properties.setProperty("org.quartz.jobStore.isClustered", "true");
+        properties.setProperty("org.quartz.jobStore.clusterCheckinInterval", "20000");
+        properties.setProperty("org.quartz.threadPool.threadCount", "5");
+        properties.setProperty("org.quartz.dataSource.quartzDataSource.provider", "hikari");
+        properties.setProperty("org.quartz.dataSource.quartzDataSource.driver", "org.postgresql.Driver");
+        properties.setProperty("org.quartz.dataSource.quartzDataSource.URL", "jdbc:postgresql://localhost:5432/pixid");
+        properties.setProperty("org.quartz.dataSource.quartzDataSource.user", "pramods");
+        properties.setProperty("org.quartz.dataSource.quartzDataSource.password", "User@123");
+        return properties;
+    }
 
     @Bean
     public JobDetailFactoryBean jobDetail() {

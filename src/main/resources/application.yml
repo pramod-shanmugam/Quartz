@@ -6,15 +6,13 @@ spring:
     name: bellboy-service-template
 
   datasource:
-    driverClassName: org.postgresql.Driver
+    driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/pixid
     username: pramods
     password: User@123
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    # Hibernate ddl auto (create, create-drop, validate, update)
-    # Change hibernate.ddl-auto value to validate when flyway is being used.
     hibernate:
       ddl-auto: validate
     properties:
@@ -24,11 +22,9 @@ spring:
           lob:
             non_contextual_creation: true
 
-
   flyway:
     schemas: ${DATABASE_SCHEMA:public}
     baseline-on-migrate: true
-
 
   quartz:
     job-store-type: jdbc
@@ -37,14 +33,26 @@ spring:
     properties:
       org:
         quartz:
+          scheduler:
+            instanceName: MyScheduler
+            instanceId: AUTO
+          threadPool:
+            threadCount: 5
           jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
             driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+            useProperties: false
+            dataSource: quartzDataSource
             tablePrefix: QRTZ_
             isClustered: true
-            clusterCheckinInterval: 20000
-          scheduler:
-            instanceId: AUTO
-            instanceName: SampleScheduler
+          dataSource:
+            quartzDataSource:
+              provider: hikari
+              driverClassName: org.postgresql.Driver
+              jdbcUrl: jdbc:postgresql://localhost:5432/pixid
+              username: pramods
+              password: User@123
+              maximumPoolSize: 5
 
 # Service configuration / env
 template-service:
