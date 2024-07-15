@@ -16,14 +16,16 @@ spring:
     # Hibernate ddl auto (create, create-drop, validate, update)
     # Change hibernate.ddl-auto value to validate when flyway is being used.
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
         default_schema: ${DATABASE_SCHEMA:public}
         jdbc:
           lob:
             non_contextual_creation: true
-
+  flyway:
+    schemas: ${DATABASE_SCHEMA:public}
+    baseline-on-migrate: true
 
 # Service configuration / env
 template-service:
