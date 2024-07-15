@@ -7,9 +7,9 @@ spring:
 
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/pixid
+    username: pramods
+    password: User@123
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -23,9 +23,28 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+
+
   flyway:
     schemas: ${DATABASE_SCHEMA:public}
     baseline-on-migrate: true
+
+
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
+    properties:
+      org:
+        quartz:
+          jobStore:
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+            tablePrefix: QRTZ_
+            isClustered: true
+            clusterCheckinInterval: 20000
+          scheduler:
+            instanceId: AUTO
+            instanceName: SampleScheduler
 
 # Service configuration / env
 template-service:
